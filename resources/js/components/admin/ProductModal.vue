@@ -28,7 +28,48 @@
             </div>
         </div>
     </template>
-
+ <script>
+    export default {
+        props: ['product'],
+        data() {
+            return {
+                attachment: null
+            }
+        },
+        computed: {
+            data: function() {
+                if (this.product != null) {
+                    return this.product
+                }
+                return {
+                    name: "",
+                    units: "",
+                    price: "",
+                    description: "",
+                    image: false
+                }
+            }
+        },
+        methods: {
+            attachFile(event) {
+                this.attachment = event.target.files[0];
+            },
+            uploadFile(event) {
+                if (this.attachment != null) {
+                    var formData = new FormData();
+                    formData.append("image", this.attachment)
+                    let headers = {'Content-Type': 'multipart/form-data'}
+                    axios.post("/api/upload-file", formData, {headers}).then(response => {
+                        this.product.image = response.data
+                        this.$emit('close', this.product)
+                    })
+                } else {
+                    this.$emit('close', this.product)
+                }
+            }
+        }
+    }
+    </script>
     <style scoped>
     .modal-mask {
         position: fixed;
