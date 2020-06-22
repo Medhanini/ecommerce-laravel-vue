@@ -22,10 +22,10 @@
     </template>
 
     <script>
-    import Main from '../components/admin/Main'
-    import Users from '../components/admin/Users'
-    import Products from '../components/admin/Products'
-    import Orders from '../components/admin/Orders'
+    import Main from '../admin/Main'
+    import Users from '../admin/Users'
+    import Products from '../admin/Products'
+    import Orders from '../admin/Orders'
 
     export default {
         data() {
