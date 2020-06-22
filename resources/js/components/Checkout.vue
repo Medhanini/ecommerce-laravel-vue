@@ -33,6 +33,54 @@
             </div>
         </div>
     </template>
+<script>
+    export default {
+        props : ['pid'],
+        data(){
+            return {
+                address : "",
+                quantity : 1,
+                isLoggedIn : null,
+                product : []
+            }
+        },
+        mounted() {
+            this.isLoggedIn = localStorage.getItem('bigStore.jwt') != null
+        },
+        beforeMount() {
+            axios.get(`/api/products/${this.pid}`).then(response => this.product = response.data)
+
+            if (localStorage.getItem('bigStore.jwt') != null) {
+                this.user = JSON.parse(localStorage.getItem('bigStore.user'))
+                axios.defaults.headers.common['Content-Type'] = 'application/json'
+                axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('bigStore.jwt')
+            }
+        },
+        methods : {
+            login() {
+                this.$router.push({name: 'login', params: {nextUrl: this.$route.fullPath}})
+            },
+            register() {
+                this.$router.push({name: 'register', params: {nextUrl: this.$route.fullPath}})
+            },
+            placeOrder(e) {
+                e.preventDefault()
+
+                let address = this.address
+                let product_id = this.product.id
+                let quantity = this.quantity
+
+                axios.post('api/orders/', {address, quantity, product_id})
+                     .then(response => this.$router.push('/confirmation'))
+            },
+            checkUnits(e){
+                if (this.quantity > this.product.units) {
+                    this.quantity = this.product.units
+                }
+            }
+        }
+    }
+    </script>
 
     <style scoped>
     .small-text { font-size: 18px; }
